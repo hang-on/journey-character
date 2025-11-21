@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Journeys in Avalon – Character Sheet</title>
+
+  <!-- Optional fancy fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f4efe5;
+      --bg-dark: #e1d8c7;
+      --accent: #7c3b25;
+      --border: #c0b6a3;
+      --text: #2c2520;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: "EB Garamond", serif;
+      background: radial-gradient(circle at top, #f7f2e7, #d7cbb5);
+      color: var(--text);
+    }
+
+    .sheet {
+      max-width: 950px;
+      margin: 0 auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      padding: 2.5rem 2.5rem 3rem;
+      border-radius: 12px;
+    }
+
+    h1 {
+      font-family: "Cinzel", serif;
+      text-align: center;
+      letter-spacing: 0.08em;
+      margin-top: 0;
+      margin-bottom: 1.2rem;
+      font-size: 2.1rem;
+    }
+
+    h2 {
+      font-family: "Cinzel", serif;
+      color: var(--accent);
+      text-align: center;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      font-size: 1.4rem;
+    }
+
+    fieldset {
+      border: 1px solid var(--border);
+      padding: 1rem 1.2rem 1.2rem;
+      border-radius: 10px;
+      background: linear-gradient(#f7f1e6, #eee1cf);
+      margin: 0 0 1.2rem;
+    }
+
+    legend {
+      font-family: "Cinzel", serif;
+      color: var(--accent);
+      padding: 0 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    label {
+      display: grid;
+      grid-template-columns: minmax(7rem, 9rem) 1fr;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    label span {
+      white-space: nowrap;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      font: inherit;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.4rem;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    input[type="number"] {
+      max-width: 5rem;
+    }
+
+    input[readonly] {
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 4rem;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr;
+      gap: 1rem;
+    }
+
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .small-labels label {
+      grid-template-columns: minmax(8rem, 1.5fr) 1fr;
+    }
+
+    .background-notes textarea {
+      min-height: 7rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 0.4rem;
+    }
+
+    th, td {
+      padding: 0.25rem 0.35rem;
+      border-bottom: 1px solid #d1c6b4;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+      font-family: "Cinzel", serif;
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+    }
+
+    .subheading {
+      font-family: "Cinzel", serif;
+      color: var(--accent);
+      text-align: center;
+      margin: 0.6rem 0 0.3rem;
+      font-size: 1.05rem;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .small-text {
+      font-size: 0.85rem;
+    }
+
+    .footer-controls {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    button {
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      padding: 0.35rem 0.9rem;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .inline-pair {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .inline-pair span.inline-separator {
+      flex: 0;
+      width: auto;
+    }
+
+    .inline-pair input[type="number"] {
+      max-width: 4rem;
+    }
+
+    @media (max-width: 800px) {
+      .two-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <h1>Journeys in Avalon – Character Sheet</h1>
+
+    <!-- BASIC INFO + WAYS -->
+    <div class="two-columns">
+      <fieldset>
+        <legend>Basic Information</legend>
+        <label>
+          <span>Name:</span>
+          <input data-field="name" type="text" />
+        </label>
+        <label>
+          <span>Color:</span>
+          <input data-field="color" type="text" />
+        </label>
+        <label>
+          <span>Origin:</span>
+          <input data-field="origin" type="text" />
+        </label>
+        <label>
+          <span>Personality Traits:</span>
+          <input data-field="traits" type="text" />
+        </label>
+        <label>
+          <span>Starting Territory:</span>
+          <input data-field="startingTerritory" type="text" />
+        </label>
+      </fieldset>
+
+      <fieldset class="small-labels">
+        <legend>Ways</legend>
+        <label>
+          <span>Combativeness:</span>
+          <input data-field="wayCombativeness" type="number" min="0" step="1" />
+        </label>
+        <label>
+          <span>Creativity:</span>
+          <input data-field="wayCreativity" type="number" min="0" step="1" />
+        </label>
+        <label>
+          <span>Awareness:</span>
+          <input data-field="wayAwareness" type="number" min="0" step="1" />
+        </label>
+        <label>
+          <span>Conviction:</span>
+          <input data-field="wayConviction" type="number" min="0" step="1" />
+        </label>
+        <label>
+          <span>Reason:</span>
+          <input data-field="wayReason" type="number" min="0" step="1" />
+        </label>
+      </fieldset>
+    </div>
+
+    <!-- BACKGROUND + NOTES -->
+    <section class="background-notes">
+      <h2>Background</h2>
+      <textarea data-field="background" placeholder="Write your character's background here..."></textarea>
+
+      <h2>Notes</h2>
+      <textarea data-field="notes" placeholder="Session notes, reminders, etc."></textarea>
+    </section>
+
+    <!-- ESSENTIALS -->
+    <h2>Essentials</h2>
+    <div class="flex-row">
+      <fieldset style="flex:1;">
+        <legend>Vital Stats</legend>
+        <label>
+          <span>Health:</span>
+          <div class="inline-pair">
+            <input data-field="healthCurrent" type="number" min="0" placeholder="Cur" />
+            <span class="inline-separator">/</span>
+            <input data-field="healthMax" type="number" min="0" placeholder="Max" />
+          </div>
+        </label>
+        <label>
+          <span>Survival Points:</span>
+          <div class="inline-pair">
+            <input data-field="survivalCurrent" type="number" min="0" placeholder="Cur" />
+            <span class="inline-separator">/</span>
+            <input data-field="survivalMax" type="number" min="0" placeholder="Max" />
+          </div>
+        </label>
+        <label>
+          <span>Mental Resistance:</span>
+          <input data-field="mentalResistance" type="text" />
+        </label>
+      </fieldset>
+
+      <fieldset style="flex:1;">
+        <legend>Progress</legend>
+        <label>
+          <span>Experience Points:</span>
+          <input data-field="xp" type="number" min="0" step="1" />
+        </label>
+        <label>
+          <span>Magic Points:</span>
+          <div class="inline-pair">
+            <input data-field="magicCurrent" type="number" min="0" placeholder="Cur" />
+            <span class="inline-separator">/</span>
+            <input data-field="magicMax" type="number" min="0" placeholder="Max" />
+          </div>
+        </label>
+        <label>
+          <span>Combat Potential:</span>
+          <input data-field="combatPotential" type="text" />
+        </label>
+      </fieldset>
+    </div>
+
+    <!-- COMBAT -->
+    <h2>Combat</h2>
+    <div class="flex-row">
+      <fieldset style="flex:1;">
+        <legend>Standard Stance</legend>
+        <label>
+          <span>Attack:</span>
+          <input data-field="standardAttack" type="text" />
+        </label>
+        <label>
+          <span>Defense:</span>
+          <input data-field="standardDefense" type="text" />
+        </label>
+      </fieldset>
+      <fieldset style="flex:1;">
+        <legend>Offensive Stance</legend>
+        <label>
+          <span>Attack:</span>
+          <input data-field="offensiveAttack" type="text" />
+        </label>
+        <label>
+          <span>Defense:</span>
+          <input data-field="offensiveDefense" type="text" />
+        </label>
+      </fieldset>
+      <fieldset style="flex:1;">
+        <legend>Defensive Stance</legend>
+        <label>
+          <span>Attack:</span>
+          <input data-field="defensiveAttack" type="text" />
+        </label>
+        <label>
+          <span>Defense:</span>
+          <input data-field="defensiveDefense" type="text" />
+        </label>
+      </fieldset>
+    </div>
+
+    <!-- SKILLS -->
+    <h2>Skills</h2>
+    <div class="skills-grid">
+      <fieldset>
+        <legend>Skills (Left Column)</legend>
+        <table>
+          <thead>
+            <tr>
+              <th>Skill</th>
+              <th>Rating</th>
+              <th>Way</th>
+              <th>Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- left column skills -->
+            <tr>
+              <td>Combat</td>
+              <td><input data-field="skillCombatRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillCombatWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillCombatLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Compassion</td>
+              <td><input data-field="skillCompassionRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillCompassionWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillCompassionLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Erudition</td>
+              <td><input data-field="skillEruditionRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillEruditionWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillEruditionLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Healing</td>
+              <td><input data-field="skillHealingRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillHealingWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillHealingLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Magic</td>
+              <td><input data-field="skillMagicRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillMagicWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillMagicLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Religion</td>
+              <td><input data-field="skillReligionRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillReligionWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillReligionLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Travel</td>
+              <td><input data-field="skillTravelRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillTravelWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillTravelLevel" type="number" min="0"></td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+
+      <fieldset>
+        <legend>Skills (Right Column)</legend>
+        <table>
+          <thead>
+            <tr>
+              <th>Skill</th>
+              <th>Rating</th>
+              <th>Way</th>
+              <th>Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- right column skills -->
+            <tr>
+              <td>Communication</td>
+              <td><input data-field="skillCommunicationRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillCommunicationWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillCommunicationLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Craft</td>
+              <td><input data-field="skillCraftRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillCraftWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillCraftLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Feats</td>
+              <td><input data-field="skillFeatsRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillFeatsWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillFeatsLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Inspiration</td>
+              <td><input data-field="skillInspirationRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillInspirationWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillInspirationLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Perception</td>
+              <td><input data-field="skillPerceptionRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillPerceptionWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillPerceptionLevel" type="number" min="0"></td>
+            </tr>
+            <tr>
+              <td>Stealth</td>
+              <td><input data-field="skillStealthRating" type="number" min="0" readonly></td>
+              <td><input data-field="skillStealthWay" type="number" min="0" readonly></td>
+              <td><input data-field="skillStealthLevel" type="number" min="0"></td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+    </div>
+
+    <!-- NARRATIVE ARC -->
+    <h2>Narrative Arc</h2>
+    <fieldset>
+      <legend>Quest & Acts</legend>
+      <label>
+        <span>Quest:</span>
+        <input data-field="quest" type="text" />
+      </label>
+      <div class="flex-row small-text" style="margin-top:0.6rem;">
+        <div style="flex:1;" class="center">
+          <div class="subheading" style="margin:0;">Act 1</div>
+          <div>+3 DT on Resolution Rolls</div>
+        </div>
+        <div style="flex:1;" class="center">
+          <div class="subheading" style="margin:0;">Act 2</div>
+          <div>+5 DT on Resolution Rolls</div>
+        </div>
+        <div style="flex:1;" class="center">
+          <div class="subheading" style="margin:0;">Act 3</div>
+          <div>+7 DT on Resolution Rolls</div>
+        </div>
+      </div>
+      <label style="margin-top:0.7rem;">
+        <span>Ascension Points:</span>
+        <input data-field="ascensionPoints" type="text" placeholder="Use dots, numbers, or current/max" />
+      </label>
+    </fieldset>
+
+    <!-- METAMORPHOSIS -->
+    <h2>Metamorphosis</h2>
+    <fieldset>
+      <legend>Transformation</legend>
+      <label>
+        <span>Premise:</span>
+        <input data-field="premise" type="text" />
+      </label>
+      <label>
+        <span>Awakening:</span>
+        <input data-field="awakening" type="text" />
+      </label>
+      <label>
+        <span>Rise:</span>
+        <input data-field="rise" type="text" />
+      </label>
+    </fieldset>
+
+    <!-- EQUIPMENT -->
+    <h2>Equipment</h2>
+    <fieldset>
+      <legend>Items</legend>
+      <label>
+        <span>(E) Weapon:</span>
+        <input data-field="weapon" type="text" />
+      </label>
+      <label>
+        <span>(E) Armor:</span>
+        <input data-field="armor" type="text" />
+      </label>
+      <label>
+        <span>(E) Shield:</span>
+        <input data-field="shield" type="text" />
+      </label>
+
+      <div class="flex-row" style="margin-top:0.8rem;">
+        <div style="flex:1;">
+          <div class="small-text"><strong>Other Items (left column)</strong></div>
+          <textarea data-field="itemsLeft"></textarea>
+        </div>
+        <div style="flex:1;">
+          <div class="small-text"><strong>Other Items (right column)</strong></div>
+          <textarea data-field="itemsRight"></textarea>
+        </div>
+      </div>
+
+      <label style="margin-top:0.8rem;">
+        <span>Wealth:</span>
+        <input data-field="wealth" type="text" />
+      </label>
+    </fieldset>
+
+    <!-- COMPANIONS -->
+    <h2>Companions</h2>
+    <fieldset>
+      <legend>Allies</legend>
+      <label>
+        <span>∘ Aide-de-camp:</span>
+        <input data-field="companionAide" type="text" />
+      </label>
+      <label>
+        <span>∘ Fighter A:</span>
+        <input data-field="companionFighterA" type="text" />
+      </label>
+      <label>
+        <span>∘ Fighter B:</span>
+        <input data-field="companionFighterB" type="text" />
+      </label>
+      <label>
+        <span>∘ Fighter C:</span>
+        <input data-field="companionFighterC" type="text" />
+      </label>
+      <label>
+        <span>∘ Familiar:</span>
+        <input data-field="companionFamiliar" type="text" />
+      </label>
+      <label>
+        <span>∘ Mount:</span>
+        <input data-field="companionMount" type="text" />
+      </label>
+    </fieldset>
+
+    <!-- CONTROLS -->
+    <div class="footer-controls">
+      <button class="secondary" type="button" id="export-json">Export JSON</button>
+      <button class="secondary" type="button" id="clear-sheet">Clear sheet</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "avalonCharacterSheetV1";
+
+    function saveSheet() {
+      const data = {};
+      document.querySelectorAll("[data-field]").forEach(el => {
+        const key = el.dataset.field;
+        if (el.type === "checkbox") {
+          data[key] = el.checked;
+        } else {
+          data[key] = el.value;
+        }
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadSheet() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        document.querySelectorAll("[data-field]").forEach(el => {
+          const key = el.dataset.field;
+          if (!(key in data)) return;
+          if (el.type === "checkbox") {
+            el.checked = data[key];
+          } else {
+            el.value = data[key];
+          }
+        });
+      } catch (e) {
+        console.warn("Failed to load saved sheet:", e);
+      }
+    }
+
+    function clearSheet() {
+      if (!confirm("Clear all fields for this character?")) return;
+      document.querySelectorAll("[data-field]").forEach(el => {
+        if (el.type === "checkbox") el.checked = false;
+        else el.value = "";
+      });
+      localStorage.removeItem(STORAGE_KEY);
+      updateSkillWays();
+      updateSkillRatings();
+    }
+
+    function exportJSON() {
+      const raw = localStorage.getItem(STORAGE_KEY) || "{}";
+      const blob = new Blob([raw], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "avalon-character.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function getNumeric(fieldName) {
+      const el = document.querySelector(`[data-field="${fieldName}"]`);
+      if (!el) return 0;
+      const n = parseInt(el.value, 10);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function getWayValue(fieldName) {
+      const el = document.querySelector(`[data-field="${fieldName}"]`);
+      if (!el) return "";
+      const n = parseInt(el.value, 10);
+      return isNaN(n) ? "" : n;
+    }
+
+    function setValue(fieldName, value) {
+      const el = document.querySelector(`[data-field="${fieldName}"]`);
+      if (!el) return;
+      el.value = value === "" ? "" : value;
+    }
+
+    // Tie skills' Way values to main Ways
+    function updateSkillWays() {
+      const combativeness = getWayValue("wayCombativeness");
+      const creativity   = getWayValue("wayCreativity");
+      const awareness    = getWayValue("wayAwareness");
+      const conviction   = getWayValue("wayConviction");
+      const reason       = getWayValue("wayReason");
+
+      // Awareness -> Perception, Stealth, Travel
+      ["skillPerceptionWay", "skillStealthWay", "skillTravelWay"].forEach(f => setValue(f, awareness));
+
+      // Combativeness -> Combat, Feats
+      ["skillCombatWay", "skillFeatsWay"].forEach(f => setValue(f, combativeness));
+
+      // Conviction -> Compassion, Inspiration, Religion
+      ["skillCompassionWay", "skillInspirationWay", "skillReligionWay"].forEach(f => setValue(f, conviction));
+
+      // Creativity -> Communication, Craft
+      ["skillCommunicationWay", "skillCraftWay"].forEach(f => setValue(f, creativity));
+
+      // Reason -> Erudition, Healing, Magic
+      ["skillEruditionWay", "skillHealingWay", "skillMagicWay"].forEach(f => setValue(f, reason));
+
+      updateSkillRatings();
+      saveSheet();
+    }
+
+    function updateSkillRatings() {
+      const mappings = [
+        { rating: "skillCombatRating",        way: "skillCombatWay",        level: "skillCombatLevel" },
+        { rating: "skillCompassionRating",    way: "skillCompassionWay",    level: "skillCompassionLevel" },
+        { rating: "skillEruditionRating",     way: "skillEruditionWay",     level: "skillEruditionLevel" },
+        { rating: "skillHealingRating",       way: "skillHealingWay",       level: "skillHealingLevel" },
+        { rating: "skillMagicRating",         way: "skillMagicWay",         level: "skillMagicLevel" },
+        { rating: "skillReligionRating",      way: "skillReligionWay",      level: "skillReligionLevel" },
+        { rating: "skillTravelRating",        way: "skillTravelWay",        level: "skillTravelLevel" },
+        { rating: "skillCommunicationRating", way: "skillCommunicationWay", level: "skillCommunicationLevel" },
+        { rating: "skillCraftRating",         way: "skillCraftWay",         level: "skillCraftLevel" },
+        { rating: "skillFeatsRating",         way: "skillFeatsWay",         level: "skillFeatsLevel" },
+        { rating: "skillInspirationRating",   way: "skillInspirationWay",   level: "skillInspirationLevel" },
+        { rating: "skillPerceptionRating",    way: "skillPerceptionWay",    level: "skillPerceptionLevel" },
+        { rating: "skillStealthRating",       way: "skillStealthWay",       level: "skillStealthLevel" }
+      ];
+
+      mappings.forEach(m => {
+        const total = getNumeric(m.way) + getNumeric(m.level);
+        setValue(m.rating, total || 0);
+      });
+
+      saveSheet();
+    }
+
+    // Auto-save on change
+    document.addEventListener("input", (e) => {
+      if (!e.target.matches("[data-field]")) return;
+      const field = e.target.dataset.field || "";
+
+      if (field.startsWith("way")) {
+        updateSkillWays();
+      } else if (field.endsWith("Level")) {
+        updateSkillRatings();
+      } else {
+        saveSheet();
+      }
+    });
+
+    document.addEventListener("change", (e) => {
+      if (!e.target.matches("[data-field]")) return;
+      const field = e.target.dataset.field || "";
+
+      if (field.startsWith("way")) {
+        updateSkillWays();
+      } else if (field.endsWith("Level")) {
+        updateSkillRatings();
+      } else {
+        saveSheet();
+      }
+    });
+
+    document.getElementById("clear-sheet").addEventListener("click", clearSheet);
+    document.getElementById("export-json").addEventListener("click", exportJSON);
+
+    // Initialize
+    loadSheet();
+    updateSkillWays();
+    updateSkillRatings();
+  </script>
+</body>
+</html>
