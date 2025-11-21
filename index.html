@@ -212,6 +212,31 @@
       max-width: 4rem;
     }
 
+    .act-row {
+      width: 100%;
+    }
+
+    .act-card {
+      flex: 1;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.4);
+      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+    }
+
+    .act-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .act-card.active-act {
+      background: #f0e3cf;
+      box-shadow: 0 0 0 2px var(--accent) inset;
+    }
+
     @media (max-width: 800px) {
       .two-columns {
         grid-template-columns: 1fr;
@@ -330,7 +355,7 @@
         </label>
         <label>
           <span>Combat Potential:</span>
-          <input data-field="combatPotential" type="text" />
+          <input data-field="combatPotential" type="text" readonly />
         </label>
       </fieldset>
     </div>
@@ -342,33 +367,33 @@
         <legend>Standard Stance</legend>
         <label>
           <span>Attack:</span>
-          <input data-field="standardAttack" type="text" />
+          <input data-field="standardAttack" type="number" readonly />
         </label>
         <label>
           <span>Defense:</span>
-          <input data-field="standardDefense" type="text" />
+          <input data-field="standardDefense" type="number" readonly />
         </label>
       </fieldset>
       <fieldset style="flex:1;">
         <legend>Offensive Stance</legend>
         <label>
           <span>Attack:</span>
-          <input data-field="offensiveAttack" type="text" />
+          <input data-field="offensiveAttack" type="number" readonly />
         </label>
         <label>
           <span>Defense:</span>
-          <input data-field="offensiveDefense" type="text" />
+          <input data-field="offensiveDefense" type="number" readonly />
         </label>
       </fieldset>
       <fieldset style="flex:1;">
         <legend>Defensive Stance</legend>
         <label>
           <span>Attack:</span>
-          <input data-field="defensiveAttack" type="text" />
+          <input data-field="defensiveAttack" type="number" readonly />
         </label>
         <label>
           <span>Defense:</span>
-          <input data-field="defensiveDefense" type="text" />
+          <input data-field="defensiveDefense" type="number" readonly />
         </label>
       </fieldset>
     </div>
@@ -497,23 +522,24 @@
         <span>Quest:</span>
         <input data-field="quest" type="text" />
       </label>
-      <div class="flex-row small-text" style="margin-top:0.6rem;">
-        <div style="flex:1;" class="center">
+      <div class="flex-row small-text act-row" style="margin-top:0.6rem;">
+        <div class="act-card" data-act="1">
           <div class="subheading" style="margin:0;">Act 1</div>
           <div>+3 DT on Resolution Rolls</div>
         </div>
-        <div style="flex:1;" class="center">
+        <div class="act-card" data-act="2">
           <div class="subheading" style="margin:0;">Act 2</div>
           <div>+5 DT on Resolution Rolls</div>
         </div>
-        <div style="flex:1;" class="center">
+        <div class="act-card" data-act="3">
           <div class="subheading" style="margin:0;">Act 3</div>
           <div>+7 DT on Resolution Rolls</div>
         </div>
       </div>
+      <input type="hidden" data-field="activeAct" />
       <label style="margin-top:0.7rem;">
         <span>Ascension Points:</span>
-        <input data-field="ascensionPoints" type="text" placeholder="Use dots, numbers, or current/max" />
+        <input data-field="ascensionPoints" type="number" min="0" />
       </label>
     </fieldset>
 
@@ -541,15 +567,24 @@
       <legend>Items</legend>
       <label>
         <span>(E) Weapon:</span>
-        <input data-field="weapon" type="text" />
+        <div class="inline-pair">
+          <input data-field="weapon" type="text" />
+          <input data-field="weaponDamage" type="number" min="0" placeholder="DMG" />
+        </div>
       </label>
       <label>
         <span>(E) Armor:</span>
-        <input data-field="armor" type="text" />
+        <div class="inline-pair">
+          <input data-field="armor" type="text" />
+          <input data-field="armorDefense" type="number" min="0" placeholder="DEF" />
+        </div>
       </label>
       <label>
         <span>(E) Shield:</span>
-        <input data-field="shield" type="text" />
+        <div class="inline-pair">
+          <input data-field="shield" type="text" />
+          <input data-field="shieldDefense" type="number" min="0" placeholder="DEF" />
+        </div>
       </label>
 
       <div class="flex-row" style="margin-top:0.8rem;">
@@ -648,8 +683,11 @@
         else el.value = "";
       });
       localStorage.removeItem(STORAGE_KEY);
+      initActiveAct(true);
       updateSkillWays();
       updateSkillRatings();
+      updateCombatPotential();
+      updateStances();
     }
 
     function exportJSON() {
@@ -672,6 +710,13 @@
       return isNaN(n) ? 0 : n;
     }
 
+    function getNumericFromText(fieldName) {
+      const el = document.querySelector(`[data-field="${fieldName}"]`);
+      if (!el) return 0;
+      const n = parseInt(el.value, 10);
+      return isNaN(n) ? 0 : n;
+    }
+
     function getWayValue(fieldName) {
       const el = document.querySelector(`[data-field="${fieldName}"]`);
       if (!el) return "";
@@ -683,6 +728,26 @@
       const el = document.querySelector(`[data-field="${fieldName}"]`);
       if (!el) return;
       el.value = value === "" ? "" : value;
+    }
+
+    function updateCombatPotential() {
+      const creativityEl = document.querySelector('[data-field="wayCreativity"]');
+      let cp = "*";
+      if (creativityEl) {
+        const n = parseInt(creativityEl.value, 10);
+        if (!isNaN(n)) {
+          if (n === 1) {
+            cp = 1;
+          } else if (n >= 2 && n <= 4) {
+            cp = 2;
+          } else if (n === 5) {
+            cp = 3;
+          } else {
+            cp = "*";
+          }
+        }
+      }
+      setValue("combatPotential", cp);
     }
 
     // Tie skills' Way values to main Ways
@@ -709,6 +774,8 @@
       ["skillEruditionWay", "skillHealingWay", "skillMagicWay"].forEach(f => setValue(f, reason));
 
       updateSkillRatings();
+      updateCombatPotential();
+      updateStances();
       saveSheet();
     }
 
@@ -734,7 +801,60 @@
         setValue(m.rating, total || 0);
       });
 
+      updateStances();
       saveSheet();
+    }
+
+    function updateStances() {
+      const combativeness = getNumeric("wayCombativeness");
+      const awareness = getNumeric("wayAwareness");
+      const reason = getNumeric("wayReason");
+      const armorBonus = getNumeric("armorDefense");
+      const shieldBonus = getNumeric("shieldDefense");
+      const weaponDamage = getNumeric("weaponDamage");
+      const combatSkillRating = getNumeric("skillCombatRating");
+      const cp = getNumericFromText("combatPotential");
+
+      // Standard stance
+      const stdAttack = combativeness + combatSkillRating + weaponDamage;
+      const stdDefense = awareness + reason + armorBonus + shieldBonus + 5;
+      setValue("standardAttack", stdAttack || 0);
+      setValue("standardDefense", stdDefense || 0);
+
+      // Offensive stance
+      const offAttack = combativeness + combatSkillRating + weaponDamage + cp;
+      const offDefense = awareness + reason + armorBonus + shieldBonus + 5 - cp;
+      setValue("offensiveAttack", offAttack || 0);
+      setValue("offensiveDefense", offDefense || 0);
+
+      // Defensive stance
+      const defAttack = combativeness + combatSkillRating + weaponDamage - cp;
+      const defDefense = awareness + reason + armorBonus + shieldBonus + 5 + cp;
+      setValue("defensiveAttack", defAttack || 0);
+      setValue("defensiveDefense", defDefense || 0);
+    }
+
+    function setActiveAct(act) {
+      const hidden = document.querySelector('[data-field="activeAct"]');
+      if (!hidden) return;
+      hidden.value = String(act);
+      document.querySelectorAll('.act-card').forEach(card => {
+        card.classList.toggle('active-act', card.dataset.act === String(act));
+      });
+      saveSheet();
+    }
+
+    function initActiveAct(resetToDefault = false) {
+      const hidden = document.querySelector('[data-field="activeAct"]');
+      if (!hidden) return;
+      let act = hidden.value;
+      if (!act || resetToDefault) {
+        act = '1';
+        hidden.value = act;
+      }
+      document.querySelectorAll('.act-card').forEach(card => {
+        card.classList.toggle('active-act', card.dataset.act === String(act));
+      });
     }
 
     // Auto-save on change
@@ -746,6 +866,12 @@
         updateSkillWays();
       } else if (field.endsWith("Level")) {
         updateSkillRatings();
+      } else if (["weaponDamage", "armorDefense", "shieldDefense"].includes(field)) {
+        updateStances();
+        saveSheet();
+      } else if (field === "activeAct") {
+        initActiveAct();
+        saveSheet();
       } else {
         saveSheet();
       }
@@ -759,8 +885,22 @@
         updateSkillWays();
       } else if (field.endsWith("Level")) {
         updateSkillRatings();
+      } else if (["weaponDamage", "armorDefense", "shieldDefense"].includes(field)) {
+        updateStances();
+        saveSheet();
+      } else if (field === "activeAct") {
+        initActiveAct();
+        saveSheet();
       } else {
         saveSheet();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      const card = e.target.closest('.act-card');
+      if (card) {
+        const act = card.dataset.act;
+        setActiveAct(act);
       }
     });
 
@@ -769,8 +909,11 @@
 
     // Initialize
     loadSheet();
+    initActiveAct();
     updateSkillWays();
     updateSkillRatings();
+    updateCombatPotential();
+    updateStances();
   </script>
 </body>
 </html>
